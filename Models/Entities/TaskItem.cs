@@ -2,7 +2,7 @@
 {
     public class TaskItem
     {
-        public int Id {  get; set; }
+        public Guid Id {  get; set; }
         public required string Title { get; set; }
         public string? Description { get; set; }
         public Models.Enums.TaskStatus Status { get; set; } = Models.Enums.TaskStatus.Pending;
@@ -10,7 +10,7 @@
         public DateTime? DueDate { get; set; }
         public DateTime? CompletedAt { get; set; }
 
-        public int? CategoryId {  get; set; }
+        public Guid? CategoryId {  get; set; }
         public Category? Category { get; set; }
     }
 }

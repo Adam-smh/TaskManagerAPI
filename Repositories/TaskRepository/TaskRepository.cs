@@ -13,14 +13,38 @@ namespace TaskManagerAPI.Repositories.TaskRepository
             _context = context;
         }
 
-        public async Task<List<TaskItem>> GetAllAsync()
+        public async Task<List<TaskItem>> GetAllAsync(
+            string? searchTitle, 
+            Guid? categoryId, 
+            Models.Enums.TaskStatus? status)
         {
-            return await _context.Tasks.ToListAsync();
+            IQueryable<TaskItem> query = _context.Tasks;
+
+            if (!string.IsNullOrWhiteSpace(searchTitle))
+            {
+                query = query.Where(t =>
+                    t.Title.Contains(searchTitle));
+            }
+
+            if (categoryId.HasValue)
+            {
+                query = query.Where(t =>
+                    t.CategoryId == categoryId.Value);
+            }
+
+            if (status.HasValue)
+            {
+                query = query.Where(t =>
+                    t.Status == status.Value);
+            }
+
+            return await query
+                .Include(t => t.Category)
+                .ToListAsync();
         }
-        public async Task<TaskItem?> GetByIdAsync(int id)
+        public async Task<TaskItem?> GetByIdAsync(Guid id)
         {
-            return await _context.Tasks
-                .FirstOrDefaultAsync(t => t.Id == id);
+            return await _context.Tasks.FirstOrDefaultAsync(t => t.Id == id);
         }
 
         public async Task AddAsync(TaskItem task)
@@ -28,10 +52,10 @@ namespace TaskManagerAPI.Repositories.TaskRepository
             await _context.Tasks.AddAsync(task);
         }
 
-        public void Update(TaskItem task)
-        {
-            _context.Tasks.Update(task);
-        }
+        //public void Update(TaskItem task)
+        //{
+        //    _context.Tasks.Update(task);
+        //}
 
         public void Delete(TaskItem task)
         {

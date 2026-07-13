@@ -5,8 +5,10 @@ namespace TaskManagerAPI.Services.CategoryService
 {
     public interface ICategoryService
     {
-        Task CreateCategoryAsync(CreateCategoryDTO req);
         Task<List<FetchCategoryDTO>> GetAllCategoriesAsync();
-        //Task<FetchCategoryDTO> GetCategoryById(Guid id);
+        Task<FetchCategoryDTO> GetCategoryById(Guid id);
+        Task CreateCategoryAsync(CreateCategoryDTO req);
+        Task UpdateCategoryAsync(Guid id, UpdateCategoryDTO req);
+        Task DeleteCategoryAsync(Guid id);
     }
 }

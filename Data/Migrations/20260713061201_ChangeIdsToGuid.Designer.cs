@@ -12,8 +12,8 @@ using TaskManagerAPI.Data;
 namespace TaskManagerAPI.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260709221554_AddCategoryDescription")]
-    partial class AddCategoryDescription
+    [Migration("20260713061201_ChangeIdsToGuid")]
+    partial class ChangeIdsToGuid
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -27,12 +27,10 @@ namespace TaskManagerAPI.Data.Migrations
 
             modelBuilder.Entity("TaskManagerAPI.Models.Entities.Category", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
+                        .HasColumnType("uuid")
                         .HasColumnName("id");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Description")
                         .HasColumnType("text")
@@ -51,15 +49,13 @@ namespace TaskManagerAPI.Data.Migrations
 
             modelBuilder.Entity("TaskManagerAPI.Models.Entities.TaskItem", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
+                        .HasColumnType("uuid")
                         .HasColumnName("id");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<int?>("CategoryId")
-                        .HasColumnType("integer")
+                    b.Property<Guid?>("CategoryId")
+                        .HasColumnType("uuid")
                         .HasColumnName("category_id");
 
                     b.Property<DateTime?>("CompletedAt")
@@ -105,7 +101,7 @@ namespace TaskManagerAPI.Data.Migrations
                     b.HasOne("TaskManagerAPI.Models.Entities.Category", "Category")
                         .WithMany()
                         .HasForeignKey("CategoryId")
-                        .HasConstraintName("fk_tasks_category_category_id");
+                        .HasConstraintName("fk_tasks_categories_category_id");
 
                     b.Navigation("Category");
                 });

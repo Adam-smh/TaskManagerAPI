@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using TaskManagerAPI.DTOs.CategoryDTOs.Request;
+using TaskManagerAPI.DTOs.CategoryDTOs.Response;
 using TaskManagerAPI.Services.CategoryService;
 
 namespace TaskManagerAPI.Controllers
@@ -16,6 +17,56 @@ namespace TaskManagerAPI.Controllers
         {
             _categoryService = categoryService;
             _logger = logger;
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetAllCategoriesAsync()
+        {
+            try
+            {
+                var categories = await _categoryService.GetAllCategoriesAsync();
+                return Ok(categories);
+
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (InvalidOperationException ex)
+            {
+                return Conflict(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error occurred while fetching categories");
+
+                return StatusCode(500, "An unexpected error occurred.");
+            }
+        }
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetCategoryById(Guid id)
+        {
+            try
+            {
+                var cat = await _categoryService.GetCategoryById(id);
+                return Ok(cat);
+
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (InvalidOperationException ex)
+            {
+                return Conflict(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error occurred while fetching category");
+
+                return StatusCode(500, "An unexpected error occurred.");
+            }
         }
 
         [HttpPost]
@@ -43,14 +94,15 @@ namespace TaskManagerAPI.Controllers
             }
         }
 
-        [HttpGet]
-        public async Task<IActionResult> GetAllCategoriesAsync()
+        [HttpPatch("{id}")]
+        public async Task<IActionResult> UpdateCategoryAsync(Guid id, UpdateCategoryDTO req)
         {
             try
             {
-                var categories = await _categoryService.GetAllCategoriesAsync();
-                return Ok(categories);
 
+                await _categoryService.UpdateCategoryAsync(id, req);
+
+                return NoContent();
             }
             catch (ArgumentException ex)
             {
@@ -62,10 +114,37 @@ namespace TaskManagerAPI.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error occurred while fetching category");
+                _logger.LogError(ex, "Error occurred while updating category");
 
                 return StatusCode(500, "An unexpected error occurred.");
             }
         }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteCategoryAsync(Guid id)
+        {
+            try
+            {
+
+                await _categoryService.DeleteCategoryAsync(id);
+
+                return NoContent();
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (InvalidOperationException ex)
+            {
+                return Conflict(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error occurred while deleting Category");
+
+                return StatusCode(500, "An unexpected error occurred.");
+            }
+        }
+
     }
 }

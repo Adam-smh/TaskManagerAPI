@@ -1,6 +1,8 @@
 ﻿using TaskManagerAPI.Controllers;
 using TaskManagerAPI.DTOs.CategoryDTOs.Request;
 using TaskManagerAPI.DTOs.CategoryDTOs.Response;
+using TaskManagerAPI.DTOs.TaskDTOs.Request;
+using TaskManagerAPI.DTOs.TaskDTOs.Response;
 using TaskManagerAPI.Models.Entities;
 using TaskManagerAPI.Repositories.CategoryRepository;
 
@@ -14,7 +16,7 @@ namespace TaskManagerAPI.Services.CategoryService
 
         public CategoryService(ICategoryRepository repo, ILogger<CategoryService> logger)
         {
-            _repo = repo;
+            _repo = repo;   
             _logger = logger;
         }
 
@@ -26,6 +28,7 @@ namespace TaskManagerAPI.Services.CategoryService
 
                 return categories.Select(c => new FetchCategoryDTO
                 { 
+                    Id = c.Id,
                     Name = c.Name,
                     Description = c.Description
                 }).ToList();
@@ -39,6 +42,20 @@ namespace TaskManagerAPI.Services.CategoryService
 
         }
 
+        public async Task<FetchCategoryDTO> GetCategoryById(Guid id)
+        {
+            var cat = await _repo.GetByIdAsync(id);
+
+            var result = new FetchCategoryDTO()
+            {
+                Id = cat.Id,
+                Name = cat.Name, 
+                Description = cat.Description
+            };
+
+            return result;
+        }
+
         public async Task CreateCategoryAsync(CreateCategoryDTO req)
         {
             if (string.IsNullOrEmpty(req.Name)) 
@@ -48,7 +65,8 @@ namespace TaskManagerAPI.Services.CategoryService
             }
 
             var cat = new Category 
-            { 
+            {
+                Id = Guid.NewGuid(),
                 Name = req.Name,
                 Description = req.Description,
             };
@@ -66,6 +84,38 @@ namespace TaskManagerAPI.Services.CategoryService
 
         }
 
+        public async Task UpdateCategoryAsync(Guid id, UpdateCategoryDTO req)
+        {
+
+            var cat = await _repo.GetByIdAsync(id);
+
+            if (cat == null)
+            {
+                throw new KeyNotFoundException("Category not found");
+            }
+
+            if (req.Name != null)
+                cat.Name = req.Name;
+
+            if (req.Description != null)
+                cat.Description = req.Description;
+
+            await _repo.SaveChangesAsync();
+
+        }
+
+        public async Task DeleteCategoryAsync(Guid id)
+        {
+            Category cat = await _repo.GetByIdAsync(id);
+
+            if (cat == null)
+            {
+                throw new KeyNotFoundException("Category not found");
+            }
+
+            _repo.Delete(cat);
+            await _repo.SaveChangesAsync();
+        }
 
     }
 }

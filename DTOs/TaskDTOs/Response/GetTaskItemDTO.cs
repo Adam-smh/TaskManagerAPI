@@ -4,7 +4,7 @@ namespace TaskManagerAPI.DTOs.TaskDTOs.Response
 {
     public class GetTaskItemDTO
     {
-        public int Id { get; set; }
+        public Guid Id { get; set; }
         public required string Title { get; set; }
         public string? Description { get; set; }
         public Models.Enums.TaskStatus Status { get; set; }
@@ -13,7 +13,7 @@ namespace TaskManagerAPI.DTOs.TaskDTOs.Response
         public DateTime? CompletedAt { get; set; }
 
         //ADD LATER
-        public int? CategoryId { get; set; }
+        public Guid? CategoryId { get; set; }
         //public Category? Category { get; set; }
     }
 }

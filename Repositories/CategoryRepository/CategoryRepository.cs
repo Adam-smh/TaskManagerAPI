@@ -13,14 +13,24 @@ namespace TaskManagerAPI.Repositories.CategoryRepository
             _context = context;
         }
 
+        public async Task<List<Category>> GetAllAsync()
+        {
+            return await _context.Categories.ToListAsync();
+        }
+
+        public async Task<Category?> GetByIdAsync(Guid id)
+        {
+            return await _context.Categories.FirstOrDefaultAsync(c => c.Id == id);
+        }
+
         public async Task AddAsync(Category category)
         {
             await _context.Categories.AddAsync(category);
         }
 
-        public async Task<List<Category>> GetAllAsync()
+        public void Delete(Category category)
         {
-            return await _context.Categories.ToListAsync();
+            _context.Categories.Remove(category);
         }
 
         public async Task SaveChangesAsync()
