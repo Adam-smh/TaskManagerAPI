@@ -54,8 +54,14 @@ namespace TaskManagerAPI.Services.TaskService
         {
             var tItem = await _repo.GetByIdAsync(id);
 
+            if (tItem == null)
+            {
+                throw new KeyNotFoundException("Task not found");
+            }
+
             var result = new GetTaskItemDTO()
             {
+                Id = tItem.Id,
                 Title = tItem.Title, 
                 Description = tItem.Description,
                 Status = tItem.Status,
