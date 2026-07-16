@@ -153,7 +153,7 @@ namespace TaskManagerAPI.Services.TaskService
 
         public async Task DeleteTaskAsync(Guid id)
         {
-            TaskItem task = await _repo.GetByIdAsync(id);
+            TaskItem? task = await _repo.GetByIdAsync(id);
 
             if (task == null)
             {

@@ -106,7 +106,7 @@ namespace TaskManagerAPI.Services.CategoryService
 
         public async Task DeleteCategoryAsync(Guid id)
         {
-            Category cat = await _repo.GetByIdAsync(id);
+            Category? cat = await _repo.GetByIdAsync(id);
 
             if (cat == null)
             {
