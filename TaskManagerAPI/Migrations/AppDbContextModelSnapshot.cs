@@ -2,21 +2,18 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using TaskManagerAPI.Data;
 
 #nullable disable
 
-namespace TaskManagerAPI.Data.Migrations
+namespace TaskManagerAPI.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260713061201_ChangeIdsToGuid")]
-    partial class ChangeIdsToGuid
+    partial class AppDbContextModelSnapshot : ModelSnapshot
     {
-        /// <inheritdoc />
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -87,13 +84,75 @@ namespace TaskManagerAPI.Data.Migrations
                         .HasColumnType("character varying(200)")
                         .HasColumnName("title");
 
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("user_id");
+
+                    b.Property<Guid?>("UserId1")
+                        .HasColumnType("uuid")
+                        .HasColumnName("user_id1");
+
                     b.HasKey("Id")
                         .HasName("pk_tasks");
 
                     b.HasIndex("CategoryId")
                         .HasDatabaseName("ix_tasks_category_id");
 
+                    b.HasIndex("UserId")
+                        .HasDatabaseName("ix_tasks_user_id");
+
+                    b.HasIndex("UserId1")
+                        .HasDatabaseName("ix_tasks_user_id1");
+
                     b.ToTable("tasks", (string)null);
+                });
+
+            modelBuilder.Entity("TaskManagerAPI.Models.Entities.User", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasMaxLength(254)
+                        .HasColumnType("character varying(254)")
+                        .HasColumnName("email");
+
+                    b.Property<bool>("IsEmailConfirmed")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasDefaultValue(false)
+                        .HasColumnName("is_email_confirmed");
+
+                    b.Property<string>("Password")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("password");
+
+                    b.Property<string>("ProfileImage")
+                        .HasColumnType("text")
+                        .HasColumnName("profile_image");
+
+                    b.Property<int>("Role")
+                        .HasColumnType("integer")
+                        .HasColumnName("role");
+
+                    b.Property<string>("Username")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)")
+                        .HasColumnName("username");
+
+                    b.HasKey("Id")
+                        .HasName("pk_users");
+
+                    b.HasIndex("Email")
+                        .IsUnique()
+                        .HasDatabaseName("ix_users_email");
+
+                    b.ToTable("users", (string)null);
                 });
 
             modelBuilder.Entity("TaskManagerAPI.Models.Entities.TaskItem", b =>
@@ -103,7 +162,26 @@ namespace TaskManagerAPI.Data.Migrations
                         .HasForeignKey("CategoryId")
                         .HasConstraintName("fk_tasks_categories_category_id");
 
+                    b.HasOne("TaskManagerAPI.Models.Entities.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_tasks_users_user_id");
+
+                    b.HasOne("TaskManagerAPI.Models.Entities.User", null)
+                        .WithMany("Tasks")
+                        .HasForeignKey("UserId1")
+                        .HasConstraintName("fk_tasks_users_user_id1");
+
                     b.Navigation("Category");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("TaskManagerAPI.Models.Entities.User", b =>
+                {
+                    b.Navigation("Tasks");
                 });
 #pragma warning restore 612, 618
         }

@@ -7,6 +7,7 @@ namespace TaskManagerAPI.Repositories.CategoryRepository
         Task<List<Category>> GetAllAsync();
         Task<Category?> GetByIdAsync(Guid id);
         Task AddAsync(Category category);
+        //Task UpdateAsync(Category category);
         void Delete(Category category);
         Task SaveChangesAsync();
     }

@@ -12,5 +12,8 @@
 
         public Guid? CategoryId {  get; set; }
         public Category? Category { get; set; }
+
+        public required Guid UserId { get; set; }
+        public User User { get; set; } = null!;
     }
 }

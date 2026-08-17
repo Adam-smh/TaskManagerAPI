@@ -13,12 +13,12 @@ namespace TaskManagerAPI.Repositories.TaskRepository
             _context = context;
         }
 
-        public async Task<List<TaskItem>> GetAllAsync(
+        public async Task<List<TaskItem>> GetAllAsync(Guid userId,
             string? searchTitle, 
             Guid? categoryId, 
             Models.Enums.TaskStatus? status)
         {
-            IQueryable<TaskItem> query = _context.Tasks;
+            IQueryable<TaskItem> query = _context.Tasks.Where(t => t.UserId == userId);
 
             if (!string.IsNullOrWhiteSpace(searchTitle))
             {

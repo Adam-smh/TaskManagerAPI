@@ -1,58 +1,38 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using TaskManagerAPI.DTOs.TaskDTOs.Request;
-using TaskManagerAPI.Services.TaskService;
-using TaskManagerAPI.Models.Enums;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using System.Diagnostics.Contracts;
+using TaskManagerAPI.DTOs.UserDTOs.Request;
+using TaskManagerAPI.Services.UserService;
 
 namespace TaskManagerAPI.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class TaskController : ControllerBase
+    public class UserController : ControllerBase
     {
-        private readonly ITaskService _taskService;
-        private readonly ILogger<TaskController> _logger;
-
-        public TaskController(ITaskService taskService, ILogger<TaskController> logger)
+        private readonly IUserService _userService;
+        private readonly ILogger<UserController> _logger;
+        public UserController(IUserService userService, ILogger<UserController> logger)
         {
-            _taskService = taskService;
+            _userService = userService;
             _logger = logger;
         }
 
+        //[Authorize(Roles = "Admin")]
         [HttpGet]
-        public async Task<IActionResult> GetAllTasksAsync(Guid userId,
-            string? searchTitle,
-            Guid? categoryId,
-            Models.Enums.TaskStatus? status)
+        public async Task<IActionResult> GetAllUsers(string? username)
         {
-            try
-            {
-                var tasks = await _taskService.GetAllTasksAsync(userId, searchTitle, categoryId, status);
-                return Ok(tasks);
-            }
-            catch (ArgumentException ex)
-            {
-                return BadRequest(ex.Message);
-            }
-            catch (InvalidOperationException ex)
-            {
-                return Conflict(ex.Message);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error occurred while fetching tasks");
-
-                return StatusCode(500, "An unexpected error occurred.");
-            }
-
+            var users = await _userService.GetAllUsersAsync(username);
+            return Ok(users);
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetTaskByIdAsync(Guid id)
+        public async Task<IActionResult> GetUserById(Guid id)
         {
             try
             {
-                var task = await _taskService.GetTaskByIdAsync(id);
-                return Ok(task);
+                var user = await _userService.GetUserByIdAsync(id);
+                return Ok(user);
             }
             catch (ArgumentException ex)
             {
@@ -64,22 +44,20 @@ namespace TaskManagerAPI.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error occurred while fetching task");
+                _logger.LogError(ex, "Error occurred while fetching user");
 
                 return StatusCode(500, "An unexpected error occurred.");
             }
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateTaskAsync(CreateTaskItemDTO req)
+        public async Task<IActionResult> CreateUser(CreateUserDTO req)
         {
             try
             {
-
-                await _taskService.CreateTaskAsync(req);
+                await _userService.CreateUserAsync(req);
 
                 return Ok();
-
             }
             catch (ArgumentException ex)
             {
@@ -91,20 +69,21 @@ namespace TaskManagerAPI.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error occurred while creating task");
+                _logger.LogError(ex, "Error occurred while creating user");
 
                 return StatusCode(500, "An unexpected error occurred.");
             }
+
         }
 
         [HttpPatch("{id}")]
-        public async Task<IActionResult> UpdateTaskAsync(Guid id, UpdateTaskItemDTO req)
+        public async Task<IActionResult> UpdateUser(Guid id, UpdateUserDTO req)
         {
             try
             {
-                await _taskService.UpdateTaskAsync(id, req);
+                await _userService.UpdateUserAsync(id, req);
 
-                return NoContent();
+                return Ok();
             }
             catch (ArgumentException ex)
             {
@@ -116,18 +95,18 @@ namespace TaskManagerAPI.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error occurred while updating task");
+                _logger.LogError(ex, "Error occurred while creating user");
 
                 return StatusCode(500, "An unexpected error occurred.");
             }
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteTaskAsync(Guid id)
+        public async Task<IActionResult> DeleteUser(Guid id)
         {
             try
             {
-                await _taskService.DeleteTaskAsync(id);
+                await _userService.DeleteUserAsync(id);
 
                 return NoContent();
             }
@@ -141,7 +120,32 @@ namespace TaskManagerAPI.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error occurred while deleting task");
+                _logger.LogError(ex, "Error occurred while deleting user");
+
+                return StatusCode(500, "An unexpected error occurred.");
+            }
+        }
+
+        [HttpPost("{id}/change-password")]
+        public async Task<IActionResult> ChangePassword(Guid id, UpdateUserPasswordDTO req)
+        {
+            try
+            {
+                await _userService.ChangePasswordAsync(id, req);
+
+                return Ok();
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                return Unauthorized(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error occurred while changing password");
 
                 return StatusCode(500, "An unexpected error occurred.");
             }

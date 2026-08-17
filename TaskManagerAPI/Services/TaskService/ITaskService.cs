@@ -5,7 +5,7 @@ namespace TaskManagerAPI.Services.TaskService;
 
 public interface ITaskService
 {
-    Task<List<GetTaskItemDTO>> GetAllTasksAsync(string? searchTitle, Guid? categoryId, Models.Enums.TaskStatus? status);
+    Task<List<GetTaskItemDTO>> GetAllTasksAsync(Guid userId, string? searchTitle, Guid? categoryId, Models.Enums.TaskStatus? status);
     Task<GetTaskItemDTO> GetTaskByIdAsync(Guid id);
     Task CreateTaskAsync(CreateTaskItemDTO req);
     Task UpdateTaskAsync(Guid id, UpdateTaskItemDTO req);

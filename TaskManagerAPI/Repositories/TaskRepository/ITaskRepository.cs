@@ -4,7 +4,7 @@ namespace TaskManagerAPI.Repositories.TaskRepository
 {
     public interface ITaskRepository
     {
-        Task<List<TaskItem>> GetAllAsync(string? searchTitle, Guid? categoryId, Models.Enums.TaskStatus? status);
+        Task<List<TaskItem>> GetAllAsync(Guid userId, string? searchTitle, Guid? categoryId, Models.Enums.TaskStatus? status);
 
         Task<TaskItem?> GetByIdAsync(Guid id);
 

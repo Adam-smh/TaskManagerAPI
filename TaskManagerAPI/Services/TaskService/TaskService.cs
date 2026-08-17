@@ -19,14 +19,14 @@ namespace TaskManagerAPI.Services.TaskService
             _logger = logger;
         }
 
-        public async Task<List<GetTaskItemDTO>> GetAllTasksAsync(
+        public async Task<List<GetTaskItemDTO>> GetAllTasksAsync( Guid userId,
             string? searchTitle,
             Guid? categoryId,
             Models.Enums.TaskStatus? status)
         {
             try
             {
-                var tasks = await _repo.GetAllAsync(searchTitle, categoryId, status);
+                var tasks = await _repo.GetAllAsync(userId, searchTitle, categoryId, status);
 
                 return tasks.Select(t => new GetTaskItemDTO
                 {
@@ -97,6 +97,7 @@ namespace TaskManagerAPI.Services.TaskService
                 CreatedAt = DateTime.UtcNow,
                 DueDate = req.DueDate,
                 CategoryId = req.CategoryId,
+                UserId = req.UserId,
             };
 
             try
