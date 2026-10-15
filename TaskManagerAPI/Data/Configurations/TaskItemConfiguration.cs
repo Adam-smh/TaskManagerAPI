@@ -4,11 +4,9 @@ using TaskManagerAPI.Models.Entities;
 
 namespace TaskManagerAPI.Data.Configurations;
 
-public class TaskItemConfiguration
-    : IEntityTypeConfiguration<TaskItem>
+public class TaskItemConfiguration : IEntityTypeConfiguration<TaskItem>
 {
-    public void Configure(
-        EntityTypeBuilder<TaskItem> builder)
+    public void Configure(EntityTypeBuilder<TaskItem> builder)
     {
         builder.ToTable("tasks");
 
@@ -23,5 +21,10 @@ public class TaskItemConfiguration
 
         builder.Property(x => x.CreatedAt)
             .HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+        builder.HasOne(t => t.User)
+           .WithMany()
+           .HasForeignKey(t => t.UserId)
+           .OnDelete(DeleteBehavior.Cascade);
     }
 }

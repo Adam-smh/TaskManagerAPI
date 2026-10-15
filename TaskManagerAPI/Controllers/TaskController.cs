@@ -19,14 +19,14 @@ namespace TaskManagerAPI.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllTasksAsync(
+        public async Task<IActionResult> GetAllTasksAsync(Guid userId,
             string? searchTitle,
             Guid? categoryId,
             Models.Enums.TaskStatus? status)
         {
             try
             {
-                var tasks = await _taskService.GetAllTasksAsync(searchTitle, categoryId, status);
+                var tasks = await _taskService.GetAllTasksAsync(userId, searchTitle, categoryId, status);
                 return Ok(tasks);
             }
             catch (ArgumentException ex)
@@ -102,7 +102,6 @@ namespace TaskManagerAPI.Controllers
         {
             try
             {
-
                 await _taskService.UpdateTaskAsync(id, req);
 
                 return NoContent();
@@ -128,7 +127,6 @@ namespace TaskManagerAPI.Controllers
         {
             try
             {
-
                 await _taskService.DeleteTaskAsync(id);
 
                 return NoContent();

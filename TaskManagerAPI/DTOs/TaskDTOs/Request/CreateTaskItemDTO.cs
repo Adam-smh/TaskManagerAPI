@@ -6,7 +6,7 @@
         public string? Description { get; set; }
         public DateTime? DueDate { get; set; }
         public Guid? CategoryId { get; set; }
-
+        public required Guid UserId { get; set; }
 
     }
 }

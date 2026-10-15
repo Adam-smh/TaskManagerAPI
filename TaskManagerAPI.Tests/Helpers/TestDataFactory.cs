@@ -17,6 +17,7 @@ namespace TaskManagerAPI.Tests.Helpers
             return new TaskItem
             {
                 Id = id ?? Guid.NewGuid(),
+                UserId = Guid.NewGuid(),
                 Title = title,
                 Description = description,
                 Status = Models.Enums.TaskStatus.Pending,
