@@ -72,6 +72,7 @@ namespace TaskManagerAPI.Tests.Services
         [Fact]
         public async Task GetTasks_WhenTasksExist_ReturnsList()
         {
+            var userId = Guid.NewGuid();
 
             var tasks = new List<TaskItem>
             {
@@ -80,12 +81,13 @@ namespace TaskManagerAPI.Tests.Services
             };
 
             _repo.Setup(x => x.GetAllAsync(
+                It.Is<Guid>(id => id == userId),
                 It.IsAny<string?>(),
                 It.IsAny<Guid?>(),
                 It.IsAny<TaskStatus?>()))
                     .ReturnsAsync(tasks);
 
-            var result = await _service.GetAllTasksAsync(null, null, null);
+            var result = await _service.GetAllTasksAsync(userId, null, null, null);
 
             Assert.NotNull(result);
             Assert.Equal(2, result.Count());
@@ -97,15 +99,18 @@ namespace TaskManagerAPI.Tests.Services
         [Fact]
         public async Task GetTasks_WhenEmpty_ReturnsEmptyList()
         {
+            var userId = Guid.NewGuid();
+
             var tasks = new List<TaskItem>();
 
             _repo.Setup(x => x.GetAllAsync(
+                It.Is<Guid>(id => id == userId),
                 It.IsAny<string?>(),
                 It.IsAny<Guid?>(),
                 It.IsAny<TaskStatus?>()))
                     .ReturnsAsync(tasks);
 
-            var result = await _service.GetAllTasksAsync(null, null, null);
+            var result = await _service.GetAllTasksAsync(userId, null, null, null);
 
             Assert.NotNull(result);
             Assert.Empty(result);
