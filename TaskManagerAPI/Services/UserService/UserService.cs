@@ -78,69 +78,6 @@ namespace TaskManagerAPI.Services.UserService
             }
         }
 
-        //public async Task<GetUserDTO> GetUserByEmailAsync(string email)
-        //{
-        //    try
-        //    {
-        //        var user = await _repo.GetByEmailAsync(email);
-
-        //        if (user == null)
-        //        {
-        //            throw new KeyNotFoundException("User not found");
-        //        }
-
-        //        var result = new GetUserDTO()
-        //        {
-        //            Id = user.Id,
-        //            Username = user.Username,
-        //            Email = user.Email,
-        //            IsEmailConfirmed = user.IsEmailConfirmed,
-        //            Role = user.Role,
-        //            ProfileImage = user.ProfileImage,
-        //            Tasks = user.Tasks
-        //        };
-
-        //        return result;
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        _logger.LogError(ex, "Failed to fetch user by Id");
-        //        throw;
-        //    }
-        //}
-
-        //member
-        public async Task CreateUserAsync(CreateUserDTO req)
-        {
-            _logger.LogInformation("Creating new user");
-
-            if (await _repo.EmailExistsAsync(req.Email))
-            {
-                _logger.LogWarning("User creation failed: Email already exists");
-                throw new InvalidOperationException("Email already in use");
-            }
-
-            var user = new User
-            {
-                Id = Guid.NewGuid(),
-                Username = req.Username,
-                Email = req.Email,
-            };
-
-            user.Password = _pwHasher.HashPassword(user, req.Password);
-
-            try
-            {
-                await _repo.AddAsync(user);
-                await _repo.SaveChangesAsync();
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "User creation failed: {Email}", user.Email);
-                throw;
-            }
-        }
-
         //member
         public async Task UpdateUserAsync(Guid id, UpdateUserDTO req)
         {

@@ -120,6 +120,14 @@ namespace TaskManagerAPI.Migrations
                         .HasColumnType("character varying(254)")
                         .HasColumnName("email");
 
+                    b.Property<string>("EmailConfirmationToken")
+                        .HasColumnType("text")
+                        .HasColumnName("email_confirmation_token");
+
+                    b.Property<DateTime?>("EmailConfirmationTokenExpiresAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("email_confirmation_token_expires_at");
+
                     b.Property<bool>("IsEmailConfirmed")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("boolean")

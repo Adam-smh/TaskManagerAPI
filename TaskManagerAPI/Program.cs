@@ -4,6 +4,7 @@ using Microsoft.IdentityModel.Tokens;
 using Scalar.AspNetCore;
 using Serilog;
 using System.Text;
+using TaskManagerAPI.Configuration;
 using TaskManagerAPI.Data;
 using TaskManagerAPI.Models.Entities;
 using TaskManagerAPI.Repositories.CategoryRepository;
@@ -11,6 +12,7 @@ using TaskManagerAPI.Repositories.TaskRepository;
 using TaskManagerAPI.Repositories.UserRepository;
 using TaskManagerAPI.Services.Auth;
 using TaskManagerAPI.Services.CategoryService;
+using TaskManagerAPI.Services.EmailService;
 using TaskManagerAPI.Services.TaskService;
 using TaskManagerAPI.Services.UserService;
 
@@ -39,10 +41,15 @@ try
     builder.Services.AddScoped<ITaskService, TaskService>();
     builder.Services.AddScoped<ICategoryService, CategoryService>();
     builder.Services.AddScoped<IUserService, UserService>();
+    builder.Services.AddScoped<IEmailService, EmailService>();
     builder.Services.AddScoped<IAuthService, AuthService>();
     builder.Services.AddScoped<ITokenService, TokenService>();
 
     builder.Services.AddControllers();
+
+    builder.Services.Configure<EmailSettings>(
+        builder.Configuration.GetSection("Email")
+    );
 
     builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
 

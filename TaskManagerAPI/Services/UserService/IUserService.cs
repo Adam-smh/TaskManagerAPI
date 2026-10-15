@@ -11,7 +11,7 @@ namespace TaskManagerAPI.Services.UserService
         Task<List<GetUserDTO>> GetAllUsersAsync(string? username);
         Task<GetUserDTO> GetUserByIdAsync(Guid id);
         //Task<GetUserDTO> GetUserByEmailAsync(string email);
-        Task CreateUserAsync(CreateUserDTO req);
+        //Task CreateUserAsync(CreateUserDTO req);
         Task UpdateUserAsync(Guid id, UpdateUserDTO req);
         Task DeleteUserAsync(Guid id);
         Task ChangePasswordAsync(Guid userId, UpdateUserPasswordDTO req);

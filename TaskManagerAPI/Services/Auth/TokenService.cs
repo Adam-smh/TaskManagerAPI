@@ -45,6 +45,11 @@ namespace TaskManagerAPI.Services.Auth
             ),
 
             new Claim(
+                "isEmailConfirmed",
+                user.IsEmailConfirmed.ToString().ToLowerInvariant()
+            ),
+
+            new Claim(
                 ClaimTypes.Role,
                 user.Role.ToString()
             )

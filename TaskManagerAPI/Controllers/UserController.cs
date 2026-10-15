@@ -50,31 +50,31 @@ namespace TaskManagerAPI.Controllers
             }
         }
 
-        [HttpPost]
-        public async Task<IActionResult> CreateUser(CreateUserDTO req)
-        {
-            try
-            {
-                await _userService.CreateUserAsync(req);
+        //[HttpPost]
+        //public async Task<IActionResult> CreateUser(CreateUserDTO req)
+        //{
+        //    try
+        //    {
+        //        await _userService.CreateUserAsync(req);
 
-                return Ok();
-            }
-            catch (ArgumentException ex)
-            {
-                return BadRequest(ex.Message);
-            }
-            catch (InvalidOperationException ex)
-            {
-                return Conflict(ex.Message);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error occurred while creating user");
+        //        return Ok();
+        //    }
+        //    catch (ArgumentException ex)
+        //    {
+        //        return BadRequest(ex.Message);
+        //    }
+        //    catch (InvalidOperationException ex)
+        //    {
+        //        return Conflict(ex.Message);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        _logger.LogError(ex, "Error occurred while creating user");
 
-                return StatusCode(500, "An unexpected error occurred.");
-            }
+        //        return StatusCode(500, "An unexpected error occurred.");
+        //    }
 
-        }
+        //}
 
         [HttpPatch("{id}")]
         public async Task<IActionResult> UpdateUser(Guid id, UpdateUserDTO req)
